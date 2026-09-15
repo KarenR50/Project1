@@ -1,6 +1,9 @@
 #include<iostream>
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
+#include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
 
 //incluir las clases 
 #include"shaderClass.h"
@@ -8,22 +11,27 @@
 #include"VAO.h"
 #include"VBO.h"
 
+const unsigned int width = 800;
+const unsigned int height = 800;
 
 
-//coordenadas de los vertices 
+
 GLfloat vertices[] =
-{
-	-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, //esquina inferior izquierda
-	0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, //esquina inferior derecha
-	0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // esquina superior
-	//triangulo interno
-	-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, //izq
-	0.5f / 2 , 0.5f * float(sqrt(3)) / 6, 0.0f, //der
-	0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f, //bajo
+{ 
+	-0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, //esquina inferior izquierda
+	 0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, //esquina inferior derecha
+	 0.0f,  0.5f * float(sqrt(3)) * 2 / 3, 0.0f,     1.0f, 0.6f,  0.32f, // esquina superior
+	 
+	-0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, //izq
+	 0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, //der
+	 0.0f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f  //bajo
+
 };
 
+	
 
-//indices para el orden de los vertices
+
+
 GLuint indices[] =
 {
 	0,3,5,  //triangulo abajo izq
@@ -35,12 +43,11 @@ GLuint indices[] =
 
 int main()
 {
-	//inicar GLFW
+	
 	glfwInit();
 
 
-	//decir que version de openGL estamos usando
-	//en este caso openGL 3.3
+	
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	//decirle a GLFW que estamos usando CORE profile
@@ -50,10 +57,9 @@ int main()
 	
 
 
-	//Crear un objeto  ventana GLFW de 8000x8000 llamada 1Project1
-	GLFWwindow* window = glfwCreateWindow(800, 800, "Project1", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "Project1", NULL, NULL);
 	
-	//error por si la ventana falla en crearse 
+	
 	if (window == NULL)
 	{
 		std::cout << "Error al cear la ventana GLFW" << std::endl;
@@ -63,23 +69,22 @@ int main()
 
 
 
-	//Introducir la ventana al contexto actual
+	
 	glfwMakeContextCurrent(window);
 
-	//Cargar glad 
+	
 	gladLoadGL();
 
 
-	//Especificar el viewport de opneGL en la ventana
-	//En este caso el viewport va desde x=0, y=0 hasta x=800, y=800
-	glViewport(0, 0, 800, 800);
+	
+	glViewport(0, 0,width, height);
 
 
 
 	//generar los objetos de shader usando los default.frag y .vert
 	Shader shaderProgram("default.vert", "default.frag");
 
-	// Generates Vertex Array Object and binds it
+	
 	VAO VAO1;
 	VAO1.Bind();
 
@@ -88,26 +93,61 @@ int main()
 	// Genera Element Buffer Object y lo conecta a los indices
 	EBO EBO1(indices, sizeof(indices));
 
-	// Links VBO to VAO
-	VAO1.LinkVBO(VBO1, 0);
+	// Links VBO attributes such as coordinates and colors to VAO
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-	
+	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+
+	float rotation = 0.0f;
+	double prevTime = glfwGetTime();
+
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.764f, 0.694f, 1.0f, 1.0f);
+		glClearColor(0.191f, 0.104f, 0.500f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		shaderProgram.Activate();
+
+		double crntTime = glfwGetTime();
+		if (crntTime - prevTime >= 1.0 / 60.0)
+		{
+			rotation += 1.0f;
+			prevTime = crntTime;
+		}
+
+
+		//inicializar las matrices de modelo vista y proyeccion
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 proj = glm::mat4(1.0f);
+
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, -0.2f, -2.0f));
+		proj = glm::perspective(glm::radians(45.0f),(float)(width/height), 0.1f, 100.0f);
+
+		int modeloc = glGetUniformLocation(shaderProgram.ID, "model");
+		glUniformMatrix4fv(modeloc, 1, GL_FALSE, glm::value_ptr(model));
+		int viewloc = glGetUniformLocation(shaderProgram.ID, "view");
+		glUniformMatrix4fv(viewloc, 1, GL_FALSE, glm::value_ptr(view));
+		int projloc = glGetUniformLocation(shaderProgram.ID, "proj");
+		glUniformMatrix4fv(projloc, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+
+
 		VAO1.Bind();
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		//especificar primitiva, indices, tipo de dato de los
-		// indices y el index de los indices
+		// indices
 		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 
