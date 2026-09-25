@@ -21,16 +21,50 @@ const unsigned int height = 800;
 
 GLfloat vertices[] =
 {
-	// Posición (X, Y, Z) | Color (R, G, B) | Textura (U, V)
-	-0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f, 0.02f,    0.0f, 0.0f, // Esquina inf izq
-	 0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f, 0.02f,    1.0f, 0.0f, // Esquina inf der
-	 0.0f,  0.5f * float(sqrt(3)) * 2 / 3, 0.0f,     1.0f, 0.6f, 0.32f,    0.5f, 1.0f, // Esquina sup
+	// Posición (X,Y,Z) | Color (R,G,B) | UV (U,V) | Normal (X,Y,Z) | Tangente (X,Y,Z)
 
-	-0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,    0.9f, 0.45f, 0.17f,   0.25f, 0.5f, // Izq
-	 0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,    0.9f, 0.45f, 0.17f,   0.75f, 0.5f, // Der
-	 0.0f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,    0.8f, 0.3f, 0.02f,    0.5f, 0.0f  // Bajo
+	// Vértice 0
+	-0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,
+	 0.8f,  0.3f, 0.02f,
+	 0.0f,  0.0f,
+	 0.0f,  0.0f, 1.0f,
+	 1.0f,  0.0f, 0.0f,
+
+	 // Vértice 1
+	  0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,
+	  0.8f,  0.3f, 0.02f,
+	  1.0f,  0.0f,
+	  0.0f,  0.0f, 1.0f,
+	  1.0f,  0.0f, 0.0f,
+
+	  // Vértice 2
+	   0.0f,  0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
+	   1.0f,  0.6f, 0.32f,
+	   0.5f,  1.0f,
+	   0.0f,  0.0f, 1.0f,
+	   1.0f,  0.0f, 0.0f,
+
+	   // Vértice 3
+	   -0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,
+		0.9f,  0.45f, 0.17f,
+		0.25f, 0.5f,
+		0.0f,  0.0f, 1.0f,
+		1.0f,  0.0f, 0.0f,
+
+		// Vértice 4
+		 0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,
+		 0.9f,  0.45f, 0.17f,
+		 0.75f, 0.5f,
+		 0.0f,  0.0f, 1.0f,
+		 1.0f,  0.0f, 0.0f,
+
+		 // Vértice 5
+		  0.0f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,
+		  0.8f,  0.3f, 0.02f,
+		  0.5f, 0.0f,
+		  0.0f,  0.0f, 1.0f,
+		  1.0f,  0.0f, 0.0f
 };
-
 	
 
 
@@ -96,15 +130,21 @@ int main()
 	// Genera Element Buffer Object y lo conecta a los indices
 	EBO EBO1(indices, sizeof(indices));
 
-	// Links VBO attributes such as coordinates and colors to VAO
-	// Atributo 0: Posición (3 floats, offset 0)
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	// Atributo 0: Posición
+	VAO1.LinkAttrib(VBO1,0,3,GL_FLOAT,14 * sizeof(float),(void*)0);
 
-	// Atributo 1: Color (3 floats, offset de 3 floats)
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	// Atributo 1: Color
+	VAO1.LinkAttrib(VBO1,1,3,GL_FLOAT,14 * sizeof(float),(void*)(3 * sizeof(float)));
 
-	// Atributo 2: Coordenadas de textura (2 floats, offset de 6 floats)
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	// Atributo 2: Coordenadas de textura
+	VAO1.LinkAttrib(VBO1,2,2,GL_FLOAT,14 * sizeof(float),(void*)(6 * sizeof(float)));
+
+	// Atributo 3: Normal
+	VAO1.LinkAttrib(
+		VBO1,3,3,GL_FLOAT,14 * sizeof(float),(void*)(8 * sizeof(float)));
+
+	// Atributo 4: Tangente
+	VAO1.LinkAttrib(VBO1,4,3,GL_FLOAT,14 * sizeof(float),(void*)(11 * sizeof(float)));
 
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
@@ -118,10 +158,15 @@ int main()
 	
 	shaderProgram.Activate();
 
-	Texture gl_texture("../images/textura.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture gl_texture("../images/textura.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 	gl_texture.texUnit(shaderProgram, "tex0", 0);
 
+	//Normal Map
+	Texture normalMap("../images/textura_normal.png", GL_TEXTURE_2D, GL_TEXTURE1, GL_RGB, GL_UNSIGNED_BYTE);
+	normalMap.texUnit(shaderProgram, "normalMap", 1);
+	
 
+	normalMap.texUnit(shaderProgram, "normalMap", 1);
 	
 
 	float rotation = 0.0f;
@@ -135,13 +180,18 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shaderProgram.Activate();
+	
+		glActiveTexture(GL_TEXTURE0);
 		gl_texture.Bind();
+
+		glActiveTexture(GL_TEXTURE1);
+		normalMap.Bind();
 
 		double crntTime = glfwGetTime();
 
 		if (crntTime - prevTime >= 1.0 / 60.0)
 		{
-			rotation += 1.0f;
+			rotation += 0.25f;
 			prevTime = crntTime;
 		}
 
@@ -152,8 +202,18 @@ int main()
 		glm::mat4 proj = glm::mat4(1.0f);
 
 		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		//model = glm::mat4(1.0f);
+		//model = glm::rotate(model,glm::radians(0.0f),glm::vec3(1.0f, 0.0f, 0.0f));
+
+		model = glm::rotate(
+			model,
+			glm::radians(rotation),
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+
 		view = glm::translate(view, glm::vec3(0.0f, -0.2f, -2.0f));
-		proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
+		proj = glm::perspective(glm::radians(45.0f),(float)width / (float)height,0.1f,100.0f);
 
 		int modeloc = glGetUniformLocation(shaderProgram.ID, "model");
 		glUniformMatrix4fv(modeloc, 1, GL_FALSE, glm::value_ptr(model));

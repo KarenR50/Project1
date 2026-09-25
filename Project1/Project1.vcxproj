@@ -170,7 +170,14 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\images\textura.png" />
+    <Image Include="..\images\muro.jpg" />
+    <Image Include="..\images\muro_normal.png" />
+    <Image Include="..\images\muro_normales.png" />
+    <Image Include="..\images\textura-normal.png" />
+    <Image Include="..\images\textura.jpg" />
+    <Image Include="..\images\texture_muro.jpg" />
+    <Image Include="..\images\texture_muro_normal.png" />
+    <Image Include="..\images\texture_muro_normal_map.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -29,7 +29,7 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, 
 
 	// Configures the way the texture repeats (if it does at all)
 	glTexParameteri(texType, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(texType, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(texType, GL_TEXTURE_WRAP_T, GL_REPEAT); 
 
 	// Extra lines in case you choose to use GL_CLAMP_TO_BORDER
 	// float flatColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -37,6 +37,8 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, 
 
 	// Assigns the image to the OpenGL Texture object
 	glTexImage2D(texType, 0, format, widthImg, heightImg, 0, format, pixelType, bytes);
+
+	
 	// Generates MipMaps
 	glGenerateMipmap(texType);
 

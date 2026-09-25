@@ -1,19 +1,19 @@
 #version 330 core
 
-//Posicion, coordenadas
 layout (location = 0) in vec3 aPos;
-// Colors
 layout (location = 1) in vec3 aColor;
-// Texture Coordinates
 layout (location = 2) in vec2 aTex;
+layout (location = 3) in vec3 aNormal;
+layout (location = 4) in vec3 aTangent;
 
-// Genera el color para el sombreador de fragmentos
 out vec3 color;
-// Outputs the texture coordinates to the fragment shader
 out vec2 texCoord;
-// Controla la escala de los vertices
-uniform float scale;
 
+out vec3 Normal;
+out vec3 Tangent;
+out vec3 Bitangent;
+
+uniform float scale;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -21,12 +21,15 @@ uniform mat4 proj;
 
 void main()
 {
-	
-// Muestra las posiciones/coordenadas de todos los vértices
-	gl_Position = proj * view * model *vec4(aPos, 1.0);
-	  
-	// Asigna los colores de los datos de vértice a "color"
-	color = aColor;
-	// Assigns the texture coordinates from the Vertex Data to "texCoord"
-	texCoord = aTex;
+    gl_Position = proj * view * model * vec4(aPos, 1.0);
+
+    color = aColor;
+    texCoord = aTex;
+
+    // Transformar la normal y la tangente al espacio del mundo
+    Normal = normalize(mat3(transpose(inverse(model))) * aNormal);
+    Tangent = normalize(mat3(model) * aTangent);
+
+    // La bitangente se obtiene mediante producto cruz
+    Bitangent = normalize(cross(Normal, Tangent));
 }
