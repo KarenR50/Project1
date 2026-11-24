@@ -19,6 +19,9 @@
     <Filter Include="Archivos de recursos\textures">
       <UniqueIdentifier>{e9f67987-a1f5-41fa-b52a-4f92ebbe138d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de recursos\models">
+      <UniqueIdentifier>{12ba658f-0c95-46b7-969f-d2c1077e33e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c">
@@ -45,6 +48,15 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.vert">
@@ -52,6 +64,18 @@
     </None>
     <None Include="default.frag">
       <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="light.frag">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="light.vert">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="..\gltf\jungleblaster.bin">
+      <Filter>Archivos de recursos\models</Filter>
+    </None>
+    <None Include="..\gltf\jungleblaster.gltf">
+      <Filter>Archivos de recursos\models</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +94,15 @@
     <ClInclude Include="Texture.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\textura.jpg">
@@ -84,17 +117,23 @@
     <Image Include="..\images\texture_muro.jpg">
       <Filter>Archivos de recursos\textures</Filter>
     </Image>
-    <Image Include="..\images\texture_muro_normal_map.png">
-      <Filter>Archivos de recursos\textures</Filter>
+    <Image Include="..\gltf\JungleBlaster_BaseColor-jungleblaster_mat_opac.png">
+      <Filter>Archivos de recursos\models</Filter>
     </Image>
-    <Image Include="..\images\muro_normal.png">
-      <Filter>Archivos de recursos\textures</Filter>
+    <Image Include="..\gltf\JungleBlaster_Metallic-JungleBlaster_Roughness.png">
+      <Filter>Archivos de recursos\models</Filter>
     </Image>
-    <Image Include="..\images\muro.jpg">
-      <Filter>Archivos de recursos\textures</Filter>
+    <Image Include="..\gltf\JungleBlaster_Normal.png">
+      <Filter>Archivos de recursos\models</Filter>
     </Image>
-    <Image Include="..\images\muro_normales.png">
-      <Filter>Archivos de recursos\textures</Filter>
+    <Image Include="..\gltf\Liquid_Metal-Liquid_Roughness.png">
+      <Filter>Archivos de recursos\models</Filter>
+    </Image>
+    <Image Include="..\gltf\Liquid_Normal.png">
+      <Filter>Archivos de recursos\models</Filter>
+    </Image>
+    <Image Include="..\gltf\Liquid_Tile_BaseColor.png">
+      <Filter>Archivos de recursos\models</Filter>
     </Image>
   </ItemGroup>
 </Project>

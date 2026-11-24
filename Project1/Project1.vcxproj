@@ -150,8 +150,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -159,25 +162,34 @@
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\gltf\jungleblaster.bin" />
+    <None Include="..\gltf\jungleblaster.gltf" />
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="light.frag" />
+    <None Include="light.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\images\muro.jpg" />
-    <Image Include="..\images\muro_normal.png" />
-    <Image Include="..\images\muro_normales.png" />
+    <Image Include="..\gltf\JungleBlaster_BaseColor-jungleblaster_mat_opac.png" />
+    <Image Include="..\gltf\JungleBlaster_Metallic-JungleBlaster_Roughness.png" />
+    <Image Include="..\gltf\JungleBlaster_Normal.png" />
+    <Image Include="..\gltf\Liquid_Metal-Liquid_Roughness.png" />
+    <Image Include="..\gltf\Liquid_Normal.png" />
+    <Image Include="..\gltf\Liquid_Tile_BaseColor.png" />
     <Image Include="..\images\textura-normal.png" />
     <Image Include="..\images\textura.jpg" />
     <Image Include="..\images\texture_muro.jpg" />
     <Image Include="..\images\texture_muro_normal.png" />
-    <Image Include="..\images\texture_muro_normal_map.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
